@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity() {
                     loadStudentShowcase()
                 }.start()
             },
-            onUpdate = { student ->
-                showStudentDialog(student)
+            onUpdate = { showcase ->
+                showStudentDialog(showcase)
             }
         )
         studentRecyclerView.adapter = adapter
@@ -66,18 +66,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showStudentDialog(studentToEdit: Student? = null) {
+    private fun showStudentDialog(studentShowcaseToEdit: StudentShowcase? = null) {
         val dialogView = layoutInflater.inflate(R.layout.add_student_dialog, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.name_input)
         val ageInput = dialogView.findViewById<EditText>(R.id.age_input)
         val gradeInput = dialogView.findViewById<EditText>(R.id.grade_input)
         val admissionDateInput = dialogView.findViewById<EditText>(R.id.admission_date_input)
+        val subjectsInput = dialogView.findViewById<EditText>(R.id.subjects_input)
+        val coursesInput = dialogView.findViewById<EditText>(R.id.courses_input)
+        val studentToEdit = studentShowcaseToEdit?.student
 
-        studentToEdit?.let { student ->
+        studentShowcaseToEdit?.let { showcase ->
+            val student = showcase.student
             nameInput?.setText(student.name)
             ageInput?.setText(student.age.toString())
             gradeInput?.setText(student.grade)
             admissionDateInput?.setText(dateFormatter.format(student.admissionDate))
+            subjectsInput?.setText(showcase.subjects.joinToString(separator = "\n"))
+            coursesInput?.setText(showcase.courses.joinToString(separator = "\n"))
         }
 
         AlertDialog.Builder(this)
@@ -94,6 +100,8 @@ class MainActivity : AppCompatActivity() {
                 val age = ageInput?.text?.toString()?.trim()?.toIntOrNull() ?: 0
                 val grade = gradeInput?.text?.toString()?.trim().orEmpty()
                 val date = admissionDateInput?.text?.toString()?.trim().orEmpty()
+                val subjectNames = parseItemList(subjectsInput?.text?.toString().orEmpty())
+                val courseNames = parseItemList(coursesInput?.text?.toString().orEmpty())
                 val admissionDateParsed = dateFormatter.parse(date) ?: java.util.Date()
 
                 val student = Student(
@@ -105,33 +113,37 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 Thread {
-                    val studentDao = studentDatabase?.studentDao()
-                    val subjectDao = studentDatabase?.subjectDao()
-                    val enrollmentDao = studentDatabase?.enrollmentDao()
+                    val database = studentDatabase ?: return@Thread
+                    val studentDao = database.studentDao()
+                    val subjectDao = database.subjectDao()
+                    val enrollmentDao = database.enrollmentDao()
 
-                    if (studentToEdit == null) {
-                        val studentId = studentDao?.insertStudent(student)?.toInt() ?: 0
-                        if (studentId > 0) {
-                            subjectDao?.insertSubject(
-                                Subject(
-                                    subjectName = getString(R.string.default_subject_name),
-                                    studentId = studentId
-                                )
-                            )
-
-                            val courseId = enrollmentDao?.getCourseIdByName(getString(R.string.default_course_name))
-                                ?: enrollmentDao?.insertCourse(
-                                    Course(courseName = getString(R.string.default_course_name))
-                                )?.toInt()
-
-                            if (courseId != null && courseId > 0) {
-                                enrollmentDao?.insertEnrollment(
-                                    StudentCourseCrossRef(studentId = studentId, courseId = courseId)
-                                )
-                            }
+                    database.runInTransaction {
+                        val studentId = if (studentToEdit == null) {
+                            studentDao.insertStudent(student).toInt()
+                        } else {
+                            studentDao.updateStudent(student)
+                            student.id
                         }
-                    } else {
-                        studentDao?.updateStudent(student)
+
+                        subjectDao.deleteSubjectsForStudent(studentId)
+                        if (subjectNames.isNotEmpty()) {
+                            subjectDao.insertSubjects(
+                                subjectNames.map { subjectName ->
+                                    Subject(subjectName = subjectName, studentId = studentId)
+                                }
+                            )
+                        }
+
+                        enrollmentDao.deleteEnrollmentsForStudent(studentId)
+                        courseNames.forEach { courseName ->
+                            val courseId = enrollmentDao.getCourseIdByName(courseName)
+                                ?: enrollmentDao.insertCourse(Course(courseName = courseName)).toInt()
+
+                            enrollmentDao.insertEnrollment(
+                                StudentCourseCrossRef(studentId = studentId, courseId = courseId)
+                            )
+                        }
                     }
 
                     loadStudentShowcase()
@@ -162,5 +174,23 @@ class MainActivity : AppCompatActivity() {
                 emptyState.isVisible = !hasStudents
             }
         }.start()
+    }
+
+    private fun parseItemList(rawValue: String): List<String> {
+        val seenValues = linkedSetOf<String>()
+        val parsedValues = mutableListOf<String>()
+
+        rawValue
+            .split(Regex("[,\n]"))
+            .map(String::trim)
+            .filter(String::isNotEmpty)
+            .forEach { value ->
+                val normalizedValue = value.lowercase(Locale.getDefault())
+                if (seenValues.add(normalizedValue)) {
+                    parsedValues.add(value)
+                }
+            }
+
+        return parsedValues
     }
 }

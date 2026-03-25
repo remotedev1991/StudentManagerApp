@@ -13,7 +13,7 @@ import java.util.Locale
 
 class StudentAdapter(
     private val onDelete: (Student) -> Unit,
-    private val onUpdate: (Student) -> Unit
+    private val onUpdate: (StudentShowcase) -> Unit
 ) : ListAdapter<StudentShowcase, StudentAdapter.ItemViewHolder>(StudentDiffCallback) {
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,7 +26,11 @@ class StudentAdapter(
         private val deleteButton: ImageButton = itemView.findViewById(R.id.delete_btn)
         private val editButton: ImageButton = itemView.findViewById(R.id.edit_btn)
 
-        fun bind(item: StudentShowcase, onDelete: (Student) -> Unit, onUpdate: (Student) -> Unit) {
+        fun bind(
+            item: StudentShowcase,
+            onDelete: (Student) -> Unit,
+            onUpdate: (StudentShowcase) -> Unit
+        ) {
             val student = item.student
             val context = itemView.context
             val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -46,7 +50,7 @@ class StudentAdapter(
             }.joinToString(separator = "  •  ")
 
             deleteButton.setOnClickListener { onDelete(student) }
-            editButton.setOnClickListener { onUpdate(student) }
+            editButton.setOnClickListener { onUpdate(item) }
         }
     }
 

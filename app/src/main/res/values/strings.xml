@@ -7,7 +7,7 @@
     <string name="student_count_badge">Students • %1$d</string>
     <string name="empty_state_badge">Fresh Start</string>
     <string name="empty_state_title">Your spotlight list is waiting</string>
-    <string name="empty_state_message">Add a student to instantly create a subject and a demo course enrollment.</string>
+    <string name="empty_state_message">Add a student, then enter custom subjects and course enrollments in one beautiful form.</string>
     <string name="add_student_cta">Add student</string>
     <string name="add_student_title">Add Student</string>
     <string name="update_student_title">Update Student</string>
@@ -28,6 +28,10 @@
     <string name="grade_hint">Grade</string>
     <string name="admission_date_hint">Admission date</string>
     <string name="admission_date_helper">Format: dd/MM/yyyy</string>
+    <string name="subjects_input_hint">Subjects</string>
+    <string name="subjects_input_helper">Separate each subject with a comma or new line</string>
+    <string name="courses_input_hint">Courses</string>
+    <string name="courses_input_helper">Separate each course with a comma or new line</string>
     <string name="default_subject_name">Maths</string>
     <string name="default_course_name">Innovation Lab</string>
     <string name="default_student_name">New Student</string>

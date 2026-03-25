@@ -18,6 +18,16 @@ interface EnrollmentDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertEnrollment(crossRef: StudentCourseCrossRef)
 
+    @Query(
+        "SELECT courses.* FROM courses " +
+            "INNER JOIN student_course_cross_ref ON courses.courseId = student_course_cross_ref.courseId " +
+            "WHERE student_course_cross_ref.studentId = :studentId ORDER BY courses.courseName ASC"
+    )
+    fun getCoursesForStudent(studentId: Int): List<Course>
+
+    @Query("DELETE FROM student_course_cross_ref WHERE studentId = :studentId")
+    fun deleteEnrollmentsForStudent(studentId: Int)
+
     @Transaction
     @Query("SELECT * FROM students")
     fun getStudentsWithCourses(): List<StudentWithCourses>
