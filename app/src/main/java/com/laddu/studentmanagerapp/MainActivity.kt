@@ -1,9 +1,11 @@
 package com.laddu.studentmanagerapp
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -13,15 +15,28 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.widget.addTextChangedListener
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
+    private companion object {
+        const val MIN_AGE = 3
+        const val MAX_AGE = 100
+        const val DEFAULT_AGE = 18
+    }
+
     private var studentDatabase: StudentDatabase? = null
     private lateinit var adapter: StudentAdapter
     private lateinit var emptyState: View
     private lateinit var studentCountView: TextView
+    private var allStudents: List<StudentShowcase> = emptyList()
 
     private val dateFormatter by lazy {
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -59,6 +74,12 @@ class MainActivity : AppCompatActivity() {
         )
         studentRecyclerView.adapter = adapter
 
+        val searchInput = findViewById<EditText>(R.id.search_input)
+        searchInput?.addTextChangedListener { editable ->
+            val query = editable.toString().trim()
+            filterStudents(query)
+        }
+
         loadStudentShowcase()
 
         addButton.setOnClickListener {
@@ -69,19 +90,39 @@ class MainActivity : AppCompatActivity() {
     private fun showStudentDialog(studentShowcaseToEdit: StudentShowcase? = null) {
         val dialogView = layoutInflater.inflate(R.layout.add_student_dialog, null)
         val nameInput = dialogView.findViewById<EditText>(R.id.name_input)
-        val ageInput = dialogView.findViewById<EditText>(R.id.age_input)
-        val gradeInput = dialogView.findViewById<EditText>(R.id.grade_input)
+        val agePicker = dialogView.findViewById<NumberPicker>(R.id.age_picker)
+        val gradeChipGroup = dialogView.findViewById<ChipGroup>(R.id.grade_chip_group)
         val admissionDateInput = dialogView.findViewById<EditText>(R.id.admission_date_input)
+        val admissionDateInputLayout = dialogView.findViewById<TextInputLayout>(R.id.admission_date_input_layout)
         val subjectsInput = dialogView.findViewById<EditText>(R.id.subjects_input)
         val coursesInput = dialogView.findViewById<EditText>(R.id.courses_input)
         val studentToEdit = studentShowcaseToEdit?.student
+        var selectedAdmissionDate = studentToEdit?.admissionDate ?: Date()
+
+        agePicker.minValue = MIN_AGE
+        agePicker.maxValue = MAX_AGE
+        agePicker.wrapSelectorWheel = false
+        agePicker.value = (studentToEdit?.age ?: DEFAULT_AGE).coerceIn(MIN_AGE, MAX_AGE)
+        gradeChipGroup.check(findGradeChipId(studentToEdit?.grade ?: getString(R.string.default_grade_label), gradeChipGroup))
+
+        admissionDateInput?.setText(dateFormatter.format(selectedAdmissionDate))
+
+        val openDatePicker = {
+            showAdmissionDatePicker(selectedAdmissionDate) { updatedDate ->
+                selectedAdmissionDate = updatedDate
+                admissionDateInput?.setText(dateFormatter.format(updatedDate))
+            }
+        }
+
+        admissionDateInput?.setOnClickListener { openDatePicker() }
+        admissionDateInputLayout?.setEndIconOnClickListener { openDatePicker() }
+        admissionDateInputLayout?.setOnClickListener { openDatePicker() }
 
         studentShowcaseToEdit?.let { showcase ->
             val student = showcase.student
             nameInput?.setText(student.name)
-            ageInput?.setText(student.age.toString())
-            gradeInput?.setText(student.grade)
-            admissionDateInput?.setText(dateFormatter.format(student.admissionDate))
+            gradeChipGroup.check(findGradeChipId(student.grade, gradeChipGroup))
+            admissionDateInput?.setText(dateFormatter.format(selectedAdmissionDate))
             subjectsInput?.setText(showcase.subjects.joinToString(separator = "\n"))
             coursesInput?.setText(showcase.courses.joinToString(separator = "\n"))
         }
@@ -97,19 +138,18 @@ class MainActivity : AppCompatActivity() {
                 else getString(R.string.update_button_label)
             ) { _, _ ->
                 val name = nameInput?.text?.toString()?.trim().orEmpty()
-                val age = ageInput?.text?.toString()?.trim()?.toIntOrNull() ?: 0
-                val grade = gradeInput?.text?.toString()?.trim().orEmpty()
-                val date = admissionDateInput?.text?.toString()?.trim().orEmpty()
+                val age = agePicker.value
+                val selectedGradeChip = dialogView.findViewById<Chip>(gradeChipGroup.checkedChipId)
+                val grade = selectedGradeChip?.text?.toString()?.trim().orEmpty()
                 val subjectNames = parseItemList(subjectsInput?.text?.toString().orEmpty())
                 val courseNames = parseItemList(coursesInput?.text?.toString().orEmpty())
-                val admissionDateParsed = dateFormatter.parse(date) ?: java.util.Date()
 
                 val student = Student(
                     id = studentToEdit?.id ?: 0,
                     name = if (name.isBlank()) getString(R.string.default_student_name) else name,
                     age = age,
                     grade = if (grade.isBlank()) getString(R.string.default_grade_label) else grade,
-                    admissionDate = admissionDateParsed
+                    admissionDate = selectedAdmissionDate
                 )
 
                 Thread {
@@ -159,7 +199,7 @@ class MainActivity : AppCompatActivity() {
             val courseProfiles = studentDatabase?.enrollmentDao()?.getStudentsWithCourses().orEmpty()
             val coursesByStudentId = courseProfiles.associateBy { it.student.id }
 
-            val studentCards = studentProfiles.map { profile ->
+            allStudents = studentProfiles.map { profile ->
                 StudentShowcase(
                     student = profile.student,
                     subjects = profile.subjects.map(Subject::subjectName),
@@ -168,12 +208,36 @@ class MainActivity : AppCompatActivity() {
             }
 
             runOnUiThread {
-                adapter.submitStudents(studentCards)
-                val hasStudents = studentCards.isNotEmpty()
-                studentCountView.text = getString(R.string.student_count_badge, studentCards.size)
+                adapter.submitStudents(allStudents)
+                val hasStudents = allStudents.isNotEmpty()
+                studentCountView.text = getString(R.string.student_count_badge, allStudents.size)
                 emptyState.isVisible = !hasStudents
             }
         }.start()
+    }
+
+    private fun filterStudents(query: String) {
+        if (query.isBlank()) {
+            adapter.submitStudents(allStudents)
+            studentCountView.text = getString(R.string.student_count_badge, allStudents.size)
+            emptyState.isVisible = allStudents.isEmpty()
+            return
+        }
+
+        val filteredStudents = allStudents.filter { showcase ->
+            val student = showcase.student
+            val nameMatches = student.name.contains(query, ignoreCase = true)
+            val gradeMatches = student.grade.contains(query, ignoreCase = true)
+            val ageMatches = student.age.toString().contains(query)
+            val subjectMatches = showcase.subjects.any { it.contains(query, ignoreCase = true) }
+            val courseMatches = showcase.courses.any { it.contains(query, ignoreCase = true) }
+
+            nameMatches || gradeMatches || ageMatches || subjectMatches || courseMatches
+        }
+
+        adapter.submitStudents(filteredStudents)
+        studentCountView.text = getString(R.string.student_count_badge, filteredStudents.size)
+        emptyState.isVisible = filteredStudents.isEmpty()
     }
 
     private fun parseItemList(rawValue: String): List<String> {
@@ -192,5 +256,41 @@ class MainActivity : AppCompatActivity() {
             }
 
         return parsedValues
+    }
+
+    private fun showAdmissionDatePicker(initialDate: Date, onDateSelected: (Date) -> Unit) {
+        val calendar = Calendar.getInstance().apply {
+            time = initialDate
+        }
+
+        DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, year)
+                    set(Calendar.MONTH, month)
+                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                onDateSelected(selectedCalendar.time)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    private fun findGradeChipId(grade: String, chipGroup: ChipGroup): Int {
+        for (index in 0 until chipGroup.childCount) {
+            val chip = chipGroup.getChildAt(index) as? Chip ?: continue
+            if (chip.text.toString().equals(grade, ignoreCase = true)) {
+                return chip.id
+            }
+        }
+
+        return R.id.grade_chip_a
     }
 }

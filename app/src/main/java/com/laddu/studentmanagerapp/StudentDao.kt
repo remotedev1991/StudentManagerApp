@@ -27,7 +27,20 @@ interface StudentDao {
     @Query("SELECT * FROM students")
     fun getStudentsWithSubjects(): List<StudentWithSubjects>
 
+    @Transaction
+    @Query("SELECT * FROM students WHERE LOWER(name) LIKE LOWER(:searchName) ORDER BY name ASC")
+    fun searchStudentsByName(searchName: String): List<StudentWithSubjects>
+
+    @Transaction
+    @Query("SELECT * FROM students WHERE grade = :grade ORDER BY name ASC")
+    fun searchStudentsByGrade(grade: String): List<StudentWithSubjects>
+
+    @Transaction
+    @Query("SELECT * FROM students WHERE age >= :minAge AND age <= :maxAge ORDER BY name ASC")
+    fun searchStudentsByAgeRange(minAge: Int, maxAge: Int): List<StudentWithSubjects>
+
     //MainThread ->
     //Background Thread
 
 }
+
