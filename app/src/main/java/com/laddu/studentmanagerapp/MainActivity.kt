@@ -2,6 +2,7 @@ package com.laddu.studentmanagerapp
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -35,8 +36,31 @@ class MainActivity : AppCompatActivity() {
 
         val recyckerview = findViewById<RecyclerView>(R.id.recycler)
         recyckerview.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        val adapter = StudentAdapter()
+
+        val adapter = StudentAdapter(
+            onDelete = { student ->
+                Thread {
+                    studentDao.deleteStudent(student) //deletion
+                    val students = studentDao.getAllStudents() //fetching the updated list of students after deletion
+
+                    runOnUiThread {
+                        val adapter = recyckerview.adapter as StudentAdapter
+                        adapter.submitStudents(students)
+                    }
+                }.start()
+            })
         recyckerview.adapter = adapter
+
+        //First time fetching of students from the database and displaying in the recyclerview
+        Thread {
+            val students  = studentDao.getAllStudents()
+            Log.d("TAG", "${Thread.currentThread().name}")
+            runOnUiThread {
+            Log.d("TAG", "${Thread.currentThread().name}")
+                adapter.submitStudents(students)
+            }
+        }.start()
+
         val fab = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.add)
 
 
