@@ -8,11 +8,16 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Student::class, Subject::class], version = 3, exportSchema = false)
+@Database(
+    entities = [Student::class, Subject::class, Course::class, StudentCourseCrossRef::class],
+    version = 4,
+    exportSchema = false
+)
 @TypeConverters(Converters::class) //to handle the conversion of Date type to Long and vice versa
 abstract class StudentDatabase: RoomDatabase() {
     abstract fun studentDao(): StudentDao //to manager the actions related to the student table
     abstract fun subjectDao(): SubjectDao //to manager the actions related to the student table
+    abstract fun enrollmentDao(): EnrollmentDao //many-to-many sample APIs
 
     companion object {
         @Volatile
@@ -31,13 +36,22 @@ abstract class StudentDatabase: RoomDatabase() {
             }
         }
 
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE courses (courseId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, courseName TEXT NOT NULL)")
+                db.execSQL("CREATE TABLE student_course_cross_ref (studentId INTEGER NOT NULL, courseId INTEGER NOT NULL, PRIMARY KEY(studentId, courseId), FOREIGN KEY(studentId) REFERENCES students(id) ON DELETE CASCADE, FOREIGN KEY(courseId) REFERENCES courses(courseId) ON DELETE CASCADE)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_student_course_cross_ref_studentId ON student_course_cross_ref(studentId)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_student_course_cross_ref_courseId ON student_course_cross_ref(courseId)")
+            }
+        }
+
         fun getInstance(context: Context): StudentDatabase? {
             if(instance == null) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
                     StudentDatabase::class.java,
                     "student_database"
-                ).addMigrations(MIGRATION_1_2,MIGRATION_2_3).build()
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
             }
             return instance
         }

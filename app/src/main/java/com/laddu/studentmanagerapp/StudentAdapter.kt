@@ -1,62 +1,77 @@
 package com.laddu.studentmanagerapp
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
+import java.util.Locale
 
-class StudentAdapter(val onDelete: (Student) -> Unit, val onUpdate: (Student) -> Unit): RecyclerView.Adapter<StudentAdapter.ItemViewHolder>() {
-
-    var students: List<Student> = emptyList()
+class StudentAdapter(
+    private val onDelete: (Student) -> Unit,
+    private val onUpdate: (Student) -> Unit
+) : ListAdapter<StudentShowcase, StudentAdapter.ItemViewHolder>(StudentDiffCallback) {
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: android.widget.TextView = itemView.findViewById(R.id.name)
-        val ageTextView: android.widget.TextView = itemView.findViewById(R.id.age)
-        val gradeTextView: android.widget.TextView = itemView.findViewById(R.id.grade)
+        private val nameTextView: TextView = itemView.findViewById(R.id.name)
+        private val ageTextView: TextView = itemView.findViewById(R.id.age)
+        private val gradeTextView: TextView = itemView.findViewById(R.id.grade_badge)
+        private val admissionDateTextView: TextView = itemView.findViewById(R.id.date)
+        private val subjectsTextView: TextView = itemView.findViewById(R.id.subjects_value)
+        private val coursesTextView: TextView = itemView.findViewById(R.id.courses_value)
+        private val deleteButton: ImageButton = itemView.findViewById(R.id.delete_btn)
+        private val editButton: ImageButton = itemView.findViewById(R.id.edit_btn)
 
-        val admissionDate: android.widget.TextView = itemView.findViewById(R.id.date)
+        fun bind(item: StudentShowcase, onDelete: (Student) -> Unit, onUpdate: (Student) -> Unit) {
+            val student = item.student
+            val context = itemView.context
+            val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-        val delete: ImageButton = itemView.findViewById(R.id.delete_btn)
+            nameTextView.text = student.name
+            ageTextView.text = context.getString(R.string.age_value, student.age)
+            gradeTextView.text = context.getString(R.string.grade_badge_value, student.grade)
+            admissionDateTextView.text = context.getString(
+                R.string.admission_date_value,
+                format.format(student.admissionDate)
+            )
+            subjectsTextView.text = item.subjects.ifEmpty {
+                listOf(context.getString(R.string.no_subjects_assigned))
+            }.joinToString(separator = "  •  ")
+            coursesTextView.text = item.courses.ifEmpty {
+                listOf(context.getString(R.string.no_courses_assigned))
+            }.joinToString(separator = "  •  ")
 
-        val edit: ImageButton = itemView.findViewById(R.id.edit_btn)
+            deleteButton.setOnClickListener { onDelete(student) }
+            editButton.setOnClickListener { onUpdate(student) }
+        }
     }
 
-    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ItemViewHolder {
-        val view = android.view.LayoutInflater.from(parent.context).inflate(R.layout.student_item, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.student_item, parent, false)
         return ItemViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val student = students[position]
-        holder.nameTextView.text = student.name
-        holder.ageTextView.text = "Age: ${student.age}"
-        holder.gradeTextView.text = "Grade: ${student.grade}"
+        holder.bind(getItem(position), onDelete, onUpdate)
+    }
 
-        val format = SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-        val text = format.format(student.admissionDate)
+    fun submitStudents(students: List<StudentShowcase>) {
+        submitList(students)
+    }
 
-        holder.admissionDate.text = "Admission Date: $text"
-        holder.delete.setOnClickListener {
-            onDelete(student)
+    companion object {
+        private val StudentDiffCallback = object : DiffUtil.ItemCallback<StudentShowcase>() {
+            override fun areItemsTheSame(oldItem: StudentShowcase, newItem: StudentShowcase): Boolean {
+                return oldItem.student.id == newItem.student.id
+            }
+
+            override fun areContentsTheSame(oldItem: StudentShowcase, newItem: StudentShowcase): Boolean {
+                return oldItem == newItem
+            }
         }
-
-        holder.edit.setOnClickListener {
-            onUpdate(student)
-        }
-
     }
-
-    fun submitStudents(students: List<Student>?) {
-        this.students = students!!
-        notifyDataSetChanged()
-    }
-
-    override fun getItemCount(): Int {
-        return students.size
-    }
-
-    //added
-    //fetched
-    //deletion
-    //updation
 }

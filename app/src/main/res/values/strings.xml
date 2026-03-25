@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">StudentManagerApp</string>
+    <string name="dashboard_title">Student Showcase</string>
+    <string name="dashboard_subtitle">A glamorous roster with subjects, enrollments, and quick actions.</string>
+    <string name="student_roster_label">Spotlight roster</string>
+    <string name="student_count_placeholder">Students • 0</string>
+    <string name="student_count_badge">Students • %1$d</string>
+    <string name="empty_state_badge">Fresh Start</string>
+    <string name="empty_state_title">Your spotlight list is waiting</string>
+    <string name="empty_state_message">Add a student to instantly create a subject and a demo course enrollment.</string>
+    <string name="add_student_cta">Add student</string>
+    <string name="add_student_title">Add Student</string>
+    <string name="update_student_title">Update Student</string>
+    <string name="add_button_label">Add</string>
+    <string name="update_button_label">Update</string>
+    <string name="cancel_button_label">Cancel</string>
+    <string name="edit_student_action">Edit student</string>
+    <string name="delete_student_action">Delete student</string>
+    <string name="age_value">Age %1$d</string>
+    <string name="grade_badge_value">Grade • %1$s</string>
+    <string name="admission_date_value">Admitted • %1$s</string>
+    <string name="subjects_label">Subjects</string>
+    <string name="courses_label">Courses</string>
+    <string name="no_subjects_assigned">No subjects added yet</string>
+    <string name="no_courses_assigned">No course enrollments yet</string>
+    <string name="name_hint">Student name</string>
+    <string name="age_hint">Age</string>
+    <string name="grade_hint">Grade</string>
+    <string name="admission_date_hint">Admission date</string>
+    <string name="admission_date_helper">Format: dd/MM/yyyy</string>
+    <string name="default_subject_name">Maths</string>
+    <string name="default_course_name">Innovation Lab</string>
+    <string name="default_student_name">New Student</string>
+    <string name="default_grade_label">A</string>
 </resources>

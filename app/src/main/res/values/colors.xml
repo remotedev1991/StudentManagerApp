@@ -2,4 +2,24 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primary">#7C4DFF</color>
+    <color name="secondary">#D946EF</color>
+    <color name="tertiary">#22D3EE</color>
+    <color name="background_start">#140F2D</color>
+    <color name="background_end">#2B0B4F</color>
+    <color name="header_card">#6638D1</color>
+    <color name="header_text_secondary">#DDD2FF</color>
+    <color name="fab_background">#FF4FB3</color>
+    <color name="card_surface">#FFF8FF</color>
+    <color name="card_stroke">#E7D9FF</color>
+    <color name="soft_panel">#F4EDFF</color>
+    <color name="soft_panel_stroke">#E7D8FF</color>
+    <color name="stat_chip_start">#8B5CF6</color>
+    <color name="stat_chip_end">#EC4899</color>
+    <color name="badge_start">#7C3AED</color>
+    <color name="badge_end">#22D3EE</color>
+    <color name="action_circle">#F1E8FF</color>
+    <color name="icon_tint">#5B2BC8</color>
+    <color name="text_primary">#24173F</color>
+    <color name="text_secondary">#6D5C90</color>
 </resources>

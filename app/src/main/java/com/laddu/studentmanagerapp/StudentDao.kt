@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
@@ -21,6 +22,10 @@ interface StudentDao {
 
     @Delete
     fun deleteStudent(student: Student)
+
+    @Transaction
+    @Query("SELECT * FROM students")
+    fun getStudentsWithSubjects(): List<StudentWithSubjects>
 
     //MainThread ->
     //Background Thread
