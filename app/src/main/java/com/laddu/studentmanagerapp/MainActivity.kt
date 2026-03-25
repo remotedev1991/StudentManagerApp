@@ -3,17 +3,20 @@ package com.laddu.studentmanagerapp
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var studentDatabase: StudentDatabase
+    var studentDatabase: StudentDatabase? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,23 +29,19 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        studentDatabase = Room.databaseBuilder(
-            this,
-            StudentDatabase::class.java,
-            "student_database"
-        ).build()
+        studentDatabase = StudentDatabase.getInstance(this)
 
-        val studentDao = studentDatabase.studentDao()
+        val studentDao = studentDatabase?.studentDao()
 
         val recyckerview = findViewById<RecyclerView>(R.id.recycler)
-        recyckerview.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        recyckerview.layoutManager = LinearLayoutManager(this)
 
         val adapter = StudentAdapter(
             onDelete = { student ->
                 Thread {
-                    studentDao.deleteStudent(student) //deletion
+                    studentDao?.deleteStudent(student) //deletion
                     val students =
-                        studentDao.getAllStudents() //fetching the updated list of students after deletion
+                        studentDao?.getAllStudents() //fetching the updated list of students after deletion
 
                     runOnUiThread {
                         val adapter = recyckerview.adapter as StudentAdapter
@@ -54,31 +53,40 @@ class MainActivity : AppCompatActivity() {
 
                 val dialogView = layoutInflater.inflate(R.layout.add_student_dialog, null)
 
-                val nameInput = dialogView.findViewById<android.widget.EditText>(R.id.name_input)
-                val ageInput = dialogView.findViewById<android.widget.EditText>(R.id.age_input)
-                val gradeInput = dialogView.findViewById<android.widget.EditText>(R.id.grade_input)
+                val nameInput = dialogView.findViewById<EditText>(R.id.name_input)
+                val ageInput = dialogView.findViewById<EditText>(R.id.age_input)
+                val gradeInput = dialogView.findViewById<EditText>(R.id.grade_input)
+                val admissionDateInput = dialogView.findViewById<EditText>(R.id.admission_date_input)
 
                 nameInput?.setText(student.name)
                 ageInput?.setText(student.age.toString())
                 gradeInput?.setText(student.grade)
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val dateString = sdf.format(student.admissionDate)
+                admissionDateInput?.setText(dateString)
 
                 val dialog = AlertDialog.Builder(this)
                     .setTitle("Update Student")
                     .setView(dialogView)
                     .setPositiveButton("Update") { dialog, _ ->
-                        val nameInput = (dialog as AlertDialog).findViewById<android.widget.EditText>(R.id.name_input)
-                        val ageInput = dialog.findViewById<android.widget.EditText>(R.id.age_input)
-                        val gradeInput = dialog.findViewById<android.widget.EditText>(R.id.grade_input)
+                        val nameInput = (dialog as AlertDialog).findViewById<EditText>(R.id.name_input)
+                        val ageInput = dialog.findViewById<EditText>(R.id.age_input)
+                        val gradeInput = dialog.findViewById<EditText>(R.id.grade_input)
+                        val dateInput = dialog.findViewById<EditText>(R.id.admission_date_input)
 
                         val name = nameInput?.text.toString()
                         val age = ageInput?.text.toString().toIntOrNull() ?: 0
                         val grade = gradeInput?.text.toString()
+                        val date = dateInput?.text.toString()
 
-                        val student = student.copy(name = name, age = age, grade = grade)
+                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        val admissionDateParsed = dateFormat.parse(date) ?: java.util.Date()
+
+                        val student = student.copy(name = name, age = age, grade = grade, admissionDate = admissionDateParsed)
 
                         Thread {
-                            studentDao.updateStudent(student)
-                            val students = studentDao.getAllStudents()
+                            studentDao?.updateStudent(student)
+                            val students = studentDao?.getAllStudents()
                             runOnUiThread {
                                 val adapter = recyckerview.adapter as StudentAdapter
                                 adapter.submitStudents(students)
@@ -95,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
         //First time fetching of students from the database and displaying in the recyclerview
         Thread {
-            val students = studentDao.getAllStudents()
+            val students = studentDao?.getAllStudents()
             Log.d("TAG", "${Thread.currentThread().name}")
             runOnUiThread {
                 Log.d("TAG", "${Thread.currentThread().name}")
@@ -104,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         }.start()
 
         val fab =
-            findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.add)
+            findViewById<FloatingActionButton>(R.id.add)
 
 
         fab.setOnClickListener {
@@ -113,18 +121,25 @@ class MainActivity : AppCompatActivity() {
                 .setView(R.layout.add_student_dialog)
                 .setPositiveButton("Add") { dialog, _ ->
                     val nameInput =
-                        (dialog as AlertDialog).findViewById<android.widget.EditText>(R.id.name_input)
-                    val ageInput = dialog.findViewById<android.widget.EditText>(R.id.age_input)
-                    val gradeInput = dialog.findViewById<android.widget.EditText>(R.id.grade_input)
+                        (dialog as AlertDialog).findViewById<EditText>(R.id.name_input)
+                    val ageInput = dialog.findViewById<EditText>(R.id.age_input)
+                    val gradeInput = dialog.findViewById<EditText>(R.id.grade_input)
+                    val admissionDateInput = dialog.findViewById<EditText>(R.id.admission_date_input)
 
                     val name = nameInput?.text.toString()
                     val age = ageInput?.text.toString().toIntOrNull() ?: 0
                     val grade = gradeInput?.text.toString()
+                    val admissionDate = admissionDateInput?.text.toString()
 
-                    val student = Student(name = name, age = age, grade = grade)
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val admissionDateParsed = dateFormat.parse(admissionDate) ?: java.util.Date()
+                    val student = Student(
+                        name = name, age = age, grade = grade,
+                        admissionDate = admissionDateParsed
+                    )
                     Thread {
-                        studentDao.insertStudent(student)
-                        val students = studentDao.getAllStudents()
+                        studentDao?.insertStudent(student)
+                        val students = studentDao?.getAllStudents()
                         runOnUiThread {
                             adapter.submitStudents(students)
                         }

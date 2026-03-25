@@ -3,6 +3,7 @@ package com.laddu.studentmanagerapp
 import android.view.View
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
 
 class StudentAdapter(val onDelete: (Student) -> Unit, val onUpdate: (Student) -> Unit): RecyclerView.Adapter<StudentAdapter.ItemViewHolder>() {
 
@@ -12,6 +13,8 @@ class StudentAdapter(val onDelete: (Student) -> Unit, val onUpdate: (Student) ->
         val nameTextView: android.widget.TextView = itemView.findViewById(R.id.name)
         val ageTextView: android.widget.TextView = itemView.findViewById(R.id.age)
         val gradeTextView: android.widget.TextView = itemView.findViewById(R.id.grade)
+
+        val admissionDate: android.widget.TextView = itemView.findViewById(R.id.date)
 
         val delete: ImageButton = itemView.findViewById(R.id.delete_btn)
 
@@ -29,6 +32,10 @@ class StudentAdapter(val onDelete: (Student) -> Unit, val onUpdate: (Student) ->
         holder.ageTextView.text = "Age: ${student.age}"
         holder.gradeTextView.text = "Grade: ${student.grade}"
 
+        val format = SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+        val text = format.format(student.admissionDate)
+
+        holder.admissionDate.text = "Admission Date: $text"
         holder.delete.setOnClickListener {
             onDelete(student)
         }
@@ -39,8 +46,8 @@ class StudentAdapter(val onDelete: (Student) -> Unit, val onUpdate: (Student) ->
 
     }
 
-    fun submitStudents(students: List<Student>) {
-        this.students = students
+    fun submitStudents(students: List<Student>?) {
+        this.students = students!!
         notifyDataSetChanged()
     }
 
