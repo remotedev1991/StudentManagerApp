@@ -41,27 +41,70 @@ class MainActivity : AppCompatActivity() {
             onDelete = { student ->
                 Thread {
                     studentDao.deleteStudent(student) //deletion
-                    val students = studentDao.getAllStudents() //fetching the updated list of students after deletion
+                    val students =
+                        studentDao.getAllStudents() //fetching the updated list of students after deletion
 
                     runOnUiThread {
                         val adapter = recyckerview.adapter as StudentAdapter
                         adapter.submitStudents(students)
                     }
                 }.start()
-            })
+            },
+            onUpdate = { student ->
+
+                val dialogView = layoutInflater.inflate(R.layout.add_student_dialog, null)
+
+                val nameInput = dialogView.findViewById<android.widget.EditText>(R.id.name_input)
+                val ageInput = dialogView.findViewById<android.widget.EditText>(R.id.age_input)
+                val gradeInput = dialogView.findViewById<android.widget.EditText>(R.id.grade_input)
+
+                nameInput?.setText(student.name)
+                ageInput?.setText(student.age.toString())
+                gradeInput?.setText(student.grade)
+
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Update Student")
+                    .setView(dialogView)
+                    .setPositiveButton("Update") { dialog, _ ->
+                        val nameInput = (dialog as AlertDialog).findViewById<android.widget.EditText>(R.id.name_input)
+                        val ageInput = dialog.findViewById<android.widget.EditText>(R.id.age_input)
+                        val gradeInput = dialog.findViewById<android.widget.EditText>(R.id.grade_input)
+
+                        val name = nameInput?.text.toString()
+                        val age = ageInput?.text.toString().toIntOrNull() ?: 0
+                        val grade = gradeInput?.text.toString()
+
+                        val student = student.copy(name = name, age = age, grade = grade)
+
+                        Thread {
+                            studentDao.updateStudent(student)
+                            val students = studentDao.getAllStudents()
+                            runOnUiThread {
+                                val adapter = recyckerview.adapter as StudentAdapter
+                                adapter.submitStudents(students)
+                            }
+                        }.start()
+                    }
+                    .setNegativeButton("Cancel", null)
+
+                dialog.show()
+
+            }
+        )
         recyckerview.adapter = adapter
 
         //First time fetching of students from the database and displaying in the recyclerview
         Thread {
-            val students  = studentDao.getAllStudents()
+            val students = studentDao.getAllStudents()
             Log.d("TAG", "${Thread.currentThread().name}")
             runOnUiThread {
-            Log.d("TAG", "${Thread.currentThread().name}")
+                Log.d("TAG", "${Thread.currentThread().name}")
                 adapter.submitStudents(students)
             }
         }.start()
 
-        val fab = findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.add)
+        val fab =
+            findViewById<com.google.android.material.floatingactionbutton.FloatingActionButton>(R.id.add)
 
 
         fab.setOnClickListener {
@@ -69,7 +112,8 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Add Student")
                 .setView(R.layout.add_student_dialog)
                 .setPositiveButton("Add") { dialog, _ ->
-                    val nameInput = (dialog as AlertDialog).findViewById<android.widget.EditText>(R.id.name_input)
+                    val nameInput =
+                        (dialog as AlertDialog).findViewById<android.widget.EditText>(R.id.name_input)
                     val ageInput = dialog.findViewById<android.widget.EditText>(R.id.age_input)
                     val gradeInput = dialog.findViewById<android.widget.EditText>(R.id.grade_input)
 
@@ -80,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                     val student = Student(name = name, age = age, grade = grade)
                     Thread {
                         studentDao.insertStudent(student)
-                        val students  = studentDao.getAllStudents()
+                        val students = studentDao.getAllStudents()
                         runOnUiThread {
                             adapter.submitStudents(students)
                         }

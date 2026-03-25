@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 
-class StudentAdapter(val onDelete: (Student) -> Unit): RecyclerView.Adapter<StudentAdapter.ItemViewHolder>() {
+class StudentAdapter(val onDelete: (Student) -> Unit, val onUpdate: (Student) -> Unit): RecyclerView.Adapter<StudentAdapter.ItemViewHolder>() {
 
     var students: List<Student> = emptyList()
 
@@ -34,7 +34,7 @@ class StudentAdapter(val onDelete: (Student) -> Unit): RecyclerView.Adapter<Stud
         }
 
         holder.edit.setOnClickListener {
-
+            onUpdate(student)
         }
 
     }
