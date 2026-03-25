@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         studentDatabase = StudentDatabase.getInstance(this)
 
         val studentDao = studentDatabase?.studentDao()
+        val subjectDao = studentDatabase?.subjectDao()
 
         val recyckerview = findViewById<RecyclerView>(R.id.recycler)
         recyckerview.layoutManager = LinearLayoutManager(this)
@@ -56,7 +57,8 @@ class MainActivity : AppCompatActivity() {
                 val nameInput = dialogView.findViewById<EditText>(R.id.name_input)
                 val ageInput = dialogView.findViewById<EditText>(R.id.age_input)
                 val gradeInput = dialogView.findViewById<EditText>(R.id.grade_input)
-                val admissionDateInput = dialogView.findViewById<EditText>(R.id.admission_date_input)
+                val admissionDateInput =
+                    dialogView.findViewById<EditText>(R.id.admission_date_input)
 
                 nameInput?.setText(student.name)
                 ageInput?.setText(student.age.toString())
@@ -69,7 +71,8 @@ class MainActivity : AppCompatActivity() {
                     .setTitle("Update Student")
                     .setView(dialogView)
                     .setPositiveButton("Update") { dialog, _ ->
-                        val nameInput = (dialog as AlertDialog).findViewById<EditText>(R.id.name_input)
+                        val nameInput =
+                            (dialog as AlertDialog).findViewById<EditText>(R.id.name_input)
                         val ageInput = dialog.findViewById<EditText>(R.id.age_input)
                         val gradeInput = dialog.findViewById<EditText>(R.id.grade_input)
                         val dateInput = dialog.findViewById<EditText>(R.id.admission_date_input)
@@ -82,7 +85,12 @@ class MainActivity : AppCompatActivity() {
                         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                         val admissionDateParsed = dateFormat.parse(date) ?: java.util.Date()
 
-                        val student = student.copy(name = name, age = age, grade = grade, admissionDate = admissionDateParsed)
+                        val student = student.copy(
+                            name = name,
+                            age = age,
+                            grade = grade,
+                            admissionDate = admissionDateParsed
+                        )
 
                         Thread {
                             studentDao?.updateStudent(student)
@@ -124,7 +132,8 @@ class MainActivity : AppCompatActivity() {
                         (dialog as AlertDialog).findViewById<EditText>(R.id.name_input)
                     val ageInput = dialog.findViewById<EditText>(R.id.age_input)
                     val gradeInput = dialog.findViewById<EditText>(R.id.grade_input)
-                    val admissionDateInput = dialog.findViewById<EditText>(R.id.admission_date_input)
+                    val admissionDateInput =
+                        dialog.findViewById<EditText>(R.id.admission_date_input)
 
                     val name = nameInput?.text.toString()
                     val age = ageInput?.text.toString().toIntOrNull() ?: 0
@@ -138,7 +147,13 @@ class MainActivity : AppCompatActivity() {
                         admissionDate = admissionDateParsed
                     )
                     Thread {
-                        studentDao?.insertStudent(student)
+                        val studentID = studentDao?.insertStudent(student)
+                        subjectDao?.insertSubject(
+                            Subject(
+                                subjectName = "Maths",
+                                studentId = (studentID ?: 0L).toInt()
+                            )
+                        )
                         val students = studentDao?.getAllStudents()
                         runOnUiThread {
                             adapter.submitStudents(students)

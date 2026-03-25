@@ -11,7 +11,7 @@ import androidx.room.Update
 interface StudentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertStudent(student: Student)
+    fun insertStudent(student: Student): Long
 
     @Query("SELECT * FROM students")
     fun getAllStudents(): List<Student>

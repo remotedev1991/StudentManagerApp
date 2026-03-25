@@ -8,10 +8,11 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Student::class], version = 2)
+@Database(entities = [Student::class, Subject::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class) //to handle the conversion of Date type to Long and vice versa
 abstract class StudentDatabase: RoomDatabase() {
     abstract fun studentDao(): StudentDao //to manager the actions related to the student table
+    abstract fun subjectDao(): SubjectDao //to manager the actions related to the student table
 
     companion object {
         @Volatile
@@ -23,13 +24,20 @@ abstract class StudentDatabase: RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE subjects (subjectId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, subjectName TEXT NOT NULL, studentId INTEGER NOT NULL, FOREIGN KEY(studentId) REFERENCES students(id) ON DELETE CASCADE)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_subjects_studentId ON subjects(studentId)")
+            }
+        }
+
         fun getInstance(context: Context): StudentDatabase? {
             if(instance == null) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
                     StudentDatabase::class.java,
                     "student_database"
-                ).addMigrations(MIGRATION_1_2).build()
+                ).addMigrations(MIGRATION_1_2,MIGRATION_2_3).build()
             }
             return instance
         }
