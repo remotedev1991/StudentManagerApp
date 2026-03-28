@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/main_background"
-    tools:context=".moviedemo.MovieActivity">
+    tools:context=".moviedemo.ActorsActivity">
 
     <!-- Header -->
     <LinearLayout
@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Movie &amp; Actor Hub"
+            android:text="Actors &amp; Their Movies"
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Manage your favorite movies and actors with M:M relationships"
+            android:text="View all actors and the movies they have appeared in"
             android:textSize="13sp"
             android:textColor="@color/hint_color" />
 
@@ -41,9 +41,9 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- Movies List -->
+        <!-- Actors List -->
         <ListView
-            android:id="@+id/movies_list"
+            android:id="@+id/actors_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
@@ -65,7 +65,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MOVIES"
+                android:text="ACTORS"
                 android:textSize="64sp"
                 android:textStyle="bold"
                 android:textColor="@color/accent_color"
@@ -74,7 +74,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No movies yet"
+                android:text="No actors yet"
                 android:textSize="18sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add your first movie to get started"
+                android:text="Add actors from the Movie Activity"
                 android:textSize="14sp"
                 android:textColor="@color/hint_color" />
 
@@ -91,70 +91,5 @@
 
     </FrameLayout>
 
-    <!-- Bottom Action Buttons - Fixed at bottom -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#1a1a2e"
-        android:elevation="8dp">
-
-        <!-- Top Row: Add buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:padding="8dp">
-
-            <Button
-                android:id="@+id/add_actor_main"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:text="ADD ACTOR"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:background="@drawable/button_fab_actor_background"
-                android:layout_marginEnd="4dp"
-                android:elevation="6dp" />
-
-            <Button
-                android:id="@+id/add_movie_main"
-                android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:layout_weight="1"
-                android:text="ADD MOVIE"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:background="@drawable/button_fab_movie_background"
-                android:layout_marginStart="4dp"
-                android:elevation="6dp" />
-
-        </LinearLayout>
-
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#37474f" />
-
-        <!-- Bottom Row: Navigation button -->
-        <Button
-            android:id="@+id/view_actors_btn"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="VIEW ALL ACTORS"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:background="#1b5e20"
-            android:elevation="6dp"
-            android:layout_margin="8dp" />
-
-    </LinearLayout>
-
-
 </LinearLayout>
+

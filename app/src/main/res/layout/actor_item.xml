@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/actor_item_background"
+    android:gravity="center_vertical">
+
+    <!-- Actor Avatar Circle -->
+    <TextView
+        android:id="@+id/actor_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:background="@drawable/actor_avatar_background"
+        android:layout_marginEnd="12dp" />
+
+    <!-- Actor Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/actor_name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actor Name"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Born: "
+                android:textSize="12sp"
+                android:textColor="@color/hint_color" />
+
+            <TextView
+                android:id="@+id/actor_birth_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1990"
+                android:textSize="12sp"
+                android:textColor="@color/accent_color"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:textSize="12sp"
+                android:textColor="@color/hint_color"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/actor_nation_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="USA"
+                android:textSize="12sp"
+                android:textColor="@color/accent_color"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Remove Actor Button -->
+    <ImageButton
+        android:id="@+id/remove_actor_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/delete_button_background"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:contentDescription="Remove Actor"
+        android:scaleType="centerInside"
+        android:padding="6dp"
+        android:layout_marginStart="8dp" />
+
+</LinearLayout>
+

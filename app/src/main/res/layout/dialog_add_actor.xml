@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Actor"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/actor_name"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Actor Name"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/actor_birth_year"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Birth Year (YYYY)"
+        android:inputType="number"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/actor_nationality"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nationality"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/actor_profession"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Profession (Actor, Actress, etc)"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/actor_bio"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="Biography / Details"
+        android:inputType="textMultiLine"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="16dp"
+        android:gravity="top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/dialog_cancel_actor"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:text="Cancel"
+            android:textColor="@color/white"
+            android:background="@drawable/button_cancel_background"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/dialog_save_actor"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:text="Save"
+            android:textColor="@color/white"
+            android:background="@drawable/button_save_background" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -8,4 +8,8 @@ data class Actor(
     @PrimaryKey(autoGenerate = true)
     val actorId: Int = 0,
     val name: String,
+    val birthYear: Int,
+    val nationality: String,
+    val profession: String,
+    val bio: String,
 )

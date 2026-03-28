@@ -3,7 +3,7 @@ package com.laddu.studentmanagerapp.moviedemo
 import android.content.Context
 import androidx.room.Database
 import androidx.room.RoomDatabase
-@Database(entities = [Movie::class, Actor::class, MovieActorCrossRef::class], version = 1)
+@Database(entities = [Movie::class, Actor::class, MovieActorCrossRef::class], version = 2)
 abstract class MovieDatabase: RoomDatabase() {
   abstract fun movieDao(): MovieDao
 
@@ -17,7 +17,9 @@ abstract class MovieDatabase: RoomDatabase() {
                   context,
                   MovieDatabase::class.java,
                   "movie_database"
-              ).build()
+              )
+              .fallbackToDestructiveMigration() // For development - recreates database on schema change
+              .build()
               INSTANCE = instance
               instance
           }

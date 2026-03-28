@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Assign Actors to Movie"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select one or more actors:"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="12dp" />
+
+    <ListView
+        android:id="@+id/actors_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@drawable/edittext_bg"
+        android:divider="@null"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/dialog_cancel_assign"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:text="Cancel"
+            android:textColor="@color/white"
+            android:background="@drawable/button_cancel_background"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/dialog_save_assign"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:text="Assign"
+            android:textColor="@color/white"
+            android:background="@drawable/button_save_background" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_margin="12dp"
+    android:background="@drawable/actor_card_background"
+    android:elevation="8dp">
+
+    <!-- Actor Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/actor_name_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Actor Name"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/actor_profession_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Actor"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/genre_badge_background"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/actor_birth_year_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1990"
+                    android:textSize="12sp"
+                    android:textColor="@color/hint_color" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/actor_delete_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/delete_button_background"
+            android:src="@android:drawable/ic_menu_delete"
+            android:contentDescription="Delete Actor"
+            android:scaleType="centerInside"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Nationality and Info Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nationality"
+                android:textSize="12sp"
+                android:textColor="@color/hint_color"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/actor_nationality_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="USA"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Biography -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Biography"
+            android:textSize="12sp"
+            android:textColor="@color/hint_color"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/actor_bio_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actor biography and details"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            android:maxLines="3"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Movies Section Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Movies"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Movies Container -->
+    <LinearLayout
+        android:id="@+id/movies_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/movies_bg"
+        android:padding="8dp" />
+
+    <TextView
+        android:id="@+id/no_movies_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No movies yet"
+        android:textSize="13sp"
+        android:textColor="@color/hint_color"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="@drawable/movies_bg" />
+
+</LinearLayout>
+

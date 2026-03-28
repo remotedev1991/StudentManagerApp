@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Movie"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/movie_title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Movie Title"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/movie_genre"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Genre (Action, Drama, etc)"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/movie_release_year"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Release Year (YYYY)"
+        android:inputType="number"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/movie_director"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Director Name"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/movie_budget"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Budget (in millions)"
+        android:inputType="numberDecimal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/movie_description"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="Description / Plot Summary"
+        android:inputType="textMultiLine"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="@color/white"
+        android:textColorHint="@color/hint_color"
+        android:layout_marginBottom="16dp"
+        android:gravity="top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/dialog_cancel_movie"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:text="Cancel"
+            android:textColor="@color/white"
+            android:background="@drawable/button_cancel_background"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/dialog_save_movie"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:text="Save"
+            android:textColor="@color/white"
+            android:background="@drawable/button_save_background" />
+
+    </LinearLayout>
+
+</LinearLayout>
+
